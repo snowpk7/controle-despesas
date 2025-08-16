@@ -1,57 +1,67 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #e6f1e6; /* verde clarinho */
-    color: #333;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 700px;
-    margin: 30px auto;
-    padding: 20px;
-    background-color: #ffffff; /* branco */
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  color: #2e2e2e;
+  margin: 0;
+  padding: 20px;
 }
 
 h1 {
-    text-align: center;
-    color: #6b8e23; /* verde “bosta” */
+  color: #3d5c2d; /* verde feio */
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-form input, form button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+form {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-form button {
-    background-color: #6b8e23; /* verde “bosta” */
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
+input {
+  padding: 8px;
+  border: 1px solid #3d5c2d;
+  border-radius: 5px;
 }
 
-form button:hover {
-    background-color: #556b2f;
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+button[type="submit"] {
+  background-color: #3d5c2d;
+  color: white;
+  font-weight: bold;
 }
 
-th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
+ul {
+  list-style: none;
+  padding: 0;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-th {
-    background-color: #d0e0c0; /* verde claro */
+.despesa-item {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 5px solid #3d5c2d;
+}
+
+.btn-excluir {
+  background-color: #c0392b;
+  color: white;
+  font-weight: bold;
+}
+
+.btn-excluir:hover {
+  background-color: #e74c3c;
 }

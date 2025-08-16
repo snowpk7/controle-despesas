@@ -1,25 +1,32 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const cors = require('cors');
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
+const DB_PATH = path.join(__dirname, "despesas.json");
 
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static('public'));
+// Middleware
+app.use(express.json());
+app.use(express.static("public"));
 
-const FILE_PATH = 'despesas.json';
+// Funções utilitárias
+function lerDespesas() {
+  if (!fs.existsSync(DB_PATH)) return [];
+  const data = fs.readFileSync(DB_PATH);
+  return JSON.parse(data);
+}
 
-// Rota para obter todas as despesas
-app.get('/despesas', (req, res) => {
-    fs.readFile(FILE_PATH, 'utf8', (err, data) => {
-        if (err) return res.status(500).send('Erro ao ler arquivo');
-        res.send(JSON.parse(data));
-    });
+function salvarDespesas(despesas) {
+  fs.writeFileSync(DB_PATH, JSON.stringify(despesas, null, 2));
+}
+
+// 📌 Rota: listar todas as despesas
+app.get("/api/despesas", (req, res) => {
+  res.json(lerDespesas());
 });
 
-// Rota para adicionar uma despesa
+// 📌 Rota: adicionar nova despesa
 app.post("/api/despesas", (req, res) => {
   const { descricao, valor } = req.body;
   if (!descricao || !valor) {
@@ -27,9 +34,8 @@ app.post("/api/despesas", (req, res) => {
   }
 
   const despesas = lerDespesas();
-
   const novaDespesa = {
-    id: Date.now(), // gera um ID único baseado no timestamp
+    id: Date.now(), // ID único
     descricao,
     valor: parseFloat(valor),
     data: new Date().toISOString()
@@ -41,7 +47,7 @@ app.post("/api/despesas", (req, res) => {
   res.json(novaDespesa);
 });
 
-// Rota para apagar dispesas
+// 📌 Rota: excluir despesa
 app.delete("/api/despesas/:id", (req, res) => {
   const id = parseInt(req.params.id);
   let despesas = lerDespesas();
@@ -56,5 +62,7 @@ app.delete("/api/despesas/:id", (req, res) => {
   res.json({ message: "Despesa removida com sucesso" });
 });
 
-
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+// Iniciar servidor
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
