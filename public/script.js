@@ -38,6 +38,32 @@ form.addEventListener('submit', async e => {
     }
 });
 
+function carregarDespesas() {
+  fetch("/api/despesas")
+    .then(res => res.json())
+    .then(despesas => {
+      listaDespesas.innerHTML = "";
+      despesas.forEach(d => {
+        const li = document.createElement("li");
+        li.className = "flex justify-between items-center bg-gray-100 p-2 rounded mb-2";
+
+        li.innerHTML = `
+          <span>${d.descricao} - R$ ${d.valor.toFixed(2)} (${new Date(d.data).toLocaleDateString()})</span>
+          <button onclick="deletarDespesa(${d.id})" class="bg-red-500 text-white px-3 py-1 rounded">Excluir</button>
+        `;
+
+        listaDespesas.appendChild(li);
+      });
+    });
+}
+
+function deletarDespesa(id) {
+  fetch(`/api/despesas/${id}`, { method: "DELETE" })
+    .then(res => res.json())
+    .then(() => carregarDespesas());
+}
+
+
 // Atualiza tabela a cada 10 segundos
 loadExpenses();
 setInterval(loadExpenses, 10000);

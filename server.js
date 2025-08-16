@@ -20,21 +20,41 @@ app.get('/despesas', (req, res) => {
 });
 
 // Rota para adicionar uma despesa
-app.post('/despesas', (req, res) => {
-    const { nome, descricao, valor, data } = req.body;
-    if (!nome || !descricao || !valor || !data) {
-        return res.status(400).send('Todos os campos são obrigatórios');
-    }
+app.post("/api/despesas", (req, res) => {
+  const { descricao, valor } = req.body;
+  if (!descricao || !valor) {
+    return res.status(400).json({ error: "Descrição e valor são obrigatórios" });
+  }
 
-    fs.readFile(FILE_PATH, 'utf8', (err, data) => {
-        if (err) return res.status(500).send('Erro ao ler arquivo');
-        const despesas = JSON.parse(data);
-        despesas.push({ nome, descricao, valor, data });
-        fs.writeFile(FILE_PATH, JSON.stringify(despesas, null, 2), err => {
-            if (err) return res.status(500).send('Erro ao salvar despesa');
-            res.send({ message: 'Despesa adicionada com sucesso' });
-        });
-    });
+  const despesas = lerDespesas();
+
+  const novaDespesa = {
+    id: Date.now(), // gera um ID único baseado no timestamp
+    descricao,
+    valor: parseFloat(valor),
+    data: new Date().toISOString()
+  };
+
+  despesas.push(novaDespesa);
+  salvarDespesas(despesas);
+
+  res.json(novaDespesa);
 });
+
+// Rota para apagar dispesas
+app.delete("/api/despesas/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  let despesas = lerDespesas();
+
+  const despesasFiltradas = despesas.filter(d => d.id !== id);
+
+  if (despesas.length === despesasFiltradas.length) {
+    return res.status(404).json({ error: "Despesa não encontrada" });
+  }
+
+  salvarDespesas(despesasFiltradas);
+  res.json({ message: "Despesa removida com sucesso" });
+});
+
 
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
